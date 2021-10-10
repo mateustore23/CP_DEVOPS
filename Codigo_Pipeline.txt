@@ -1,0 +1,52 @@
+pipeline{
+    agent any
+    
+    stages{
+        
+        stage('Pegando a URL'){
+            steps{
+                git url: 'https://github.com/mateustore23/CP_DEVOPS'
+            }
+        }
+        
+        stage('Inicio Teste'){
+            steps{
+                echo 'Teste inicial Pipeline'
+            }
+        }
+        
+        stage('Build'){
+            steps{
+                echo 'Teste Build'
+                echo 'Maven'
+                sh '/opt/maven/bin/mvn -v'
+            }
+        }
+        
+        stage('Teste codigo'){
+            steps{
+                echo 'Primeiro Teste Codigo'
+            }
+        }
+        
+        stage('Aprovação do Deploy'){
+            steps{
+                script {
+                    timeout(time: 2, unit: "HOURS") {
+                        def userInput = input(
+                            id: 'userInput', message: 'Aprova o Deploy ?', parameters:[
+                            [$class: 'TextParameterDefinition', defaultValue: 'Não', description: 'Realizar Deploy ?', name: 'Executar'] ] )
+                        echo (userInput)
+                    }
+                }
+            }
+        }
+        
+        stage('Deploy'){
+            steps{
+                echo 'Deploy Feito com Sucesso'
+            }
+        }
+       
+    }  
+}
